@@ -1,4 +1,4 @@
-package com.store.project.Util;
+package com.store.project.util;
 
 public class Constants {
 

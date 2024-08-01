@@ -1,18 +1,18 @@
 package com.store.project.controller;
 
-import org.springframework.security.core.userdetails.User;
+import com.store.project.modelDTO.UserDTO;
 import org.springframework.web.bind.annotation.*;
 
-import static com.store.project.Util.Constants.USER_CONTROLLER_PATH;
-import static com.store.project.Util.Constants.USER_REGISTER_PATH;
+import static com.store.project.util.Constants.USER_REGISTER_PATH;
 
 @RestController
-@RequestMapping(USER_CONTROLLER_PATH)
+@RequestMapping("/user")
 public class UserController {
 
     @PostMapping(USER_REGISTER_PATH)
-    public String registerUser(@RequestBody User user) {
-        return "TEST security";
+    public String registerUser(@RequestBody UserDTO user) {
+        System.out.println(user);
+        return user.getEmail();
     }
 
 }
