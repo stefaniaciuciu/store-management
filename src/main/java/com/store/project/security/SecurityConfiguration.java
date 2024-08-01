@@ -24,7 +24,7 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable()) // Disable CSRF protection
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/public/").permitAll() // Adjust this to your needs
+                        .requestMatchers("/auth/**").permitAll() // Adjust this to your needs
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -34,6 +34,6 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 
-        return http.build()
+        return http.build();
     }
 }
