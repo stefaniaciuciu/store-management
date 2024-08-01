@@ -1,4 +1,4 @@
-package modelDTO;
+package com.store.project.modelDTO;
 
 public class UserDTO {
 
