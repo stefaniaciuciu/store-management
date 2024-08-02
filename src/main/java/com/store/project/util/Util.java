@@ -43,17 +43,20 @@ public class Util {
 //        }
 //    }
 
-    public static boolean validatePassword(String password) {
-            try {
-                String regexPasswordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\\\d)(?=.*[@#$%^&+=]).{8,}$";
-                if (Pattern.compile(regexPasswordPattern).matcher(password).matches()) {
-                    return true;
-                } else {
-                    throw new CustomExceptions.InvalidPasswordException("Password is not in correct format");
-                }
-            } catch (PatternSyntaxException e) {
-                throw new IllegalStateException("Invalid password pattern", e);
-            }
+    public static void validatePassword(String password) {
+        if (password == null) {
+            throw new CustomExceptions.InvalidPasswordException("Password is empty");
+        }
+
+        String regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,20}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(password);
+
+        if (!matcher.matches()) {
+            throw new CustomExceptions.InvalidPasswordException("Password is not in correct format. It should include: " +
+                    "at least one digit, one lowercase letter, one uppercase letter, one special character, " +
+                    "and be between 8 to 20 characters long with no spaces.");
+        }
     }
 
     public static User mapUserDTOToUser(UserDTO userDTO) {

@@ -1,9 +1,12 @@
 package com.store.project.service;
 
+import com.store.project.controller.UserController;
 import com.store.project.exceptions.CustomExceptions;
 import com.store.project.model.User;
 import com.store.project.repository.UserRepository;
 import com.store.project.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +14,7 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserRepository userRepository;
 
     @Autowired
@@ -20,7 +24,7 @@ public class UserService {
 
     public User registerUser(User user) {
         try {
-            //Util.validatePassword(user.getPassword());
+            Util.validatePassword(user.getPassword());
             Util.validateEmail(user.getEmail());
             boolean userExists = getUserByEmail(user.getEmail()) != null;
 
@@ -29,9 +33,17 @@ public class UserService {
             }
 
             return userRepository.save(user);
-        } catch (CustomExceptions.InvalidPasswordException | CustomExceptions.InvalidEmailException | CustomExceptions.UserAlreadyExistsException e) {
+        } catch (CustomExceptions.InvalidPasswordException e) {
+            logger.error("Invalid password for user: {}", user.getEmail(), e);
             throw e;
+        } catch (CustomExceptions.InvalidEmailException e) {
+            logger.error("Invalid email format for user: {}", user.getEmail(), e);
+            throw e; // Optional: Custom handling or additional context can be added here
+        } catch (CustomExceptions.UserAlreadyExistsException e) {
+            logger.error("User already exists: {}", user.getEmail(), e);
+            throw e; // Optional: Custom handling or additional context can be added here
         } catch (Exception e) {
+            logger.error("Unexpected error during user registration for user: {}", user.getEmail(), e);
             throw new RuntimeException("Unexpected error during user registration", e);
         }
     }
