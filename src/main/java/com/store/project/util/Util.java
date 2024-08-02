@@ -1,5 +1,6 @@
 package com.store.project.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.project.controller.UserController;
 import com.store.project.exceptions.CustomExceptions;
 import com.store.project.model.User;
@@ -61,5 +62,13 @@ public class Util {
         user.setPassword(userDTO.getPassword());
 
         return user;
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

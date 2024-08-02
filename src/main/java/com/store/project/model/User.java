@@ -25,8 +25,6 @@ public class User {
     private String email;
     @Column(unique = true)
     private String phone;
-    @Enumerated(EnumType.STRING)
-    private Role role;
 
     public Long getId() {
         return id;
