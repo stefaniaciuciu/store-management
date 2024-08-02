@@ -1,17 +1,10 @@
 package com.store.project.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "user")
 public class User {
@@ -26,6 +19,9 @@ public class User {
     private String email;
     @Column(unique = true)
     private String phone;
+
+    @OneToMany(mappedBy = "user")
+    private ArrayList<Purchase> purchases;
 
     public Long getId() {
         return id;
