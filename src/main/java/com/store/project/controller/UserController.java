@@ -32,20 +32,19 @@ public class UserController {
     @PostMapping(value = USER_REGISTER_PATH)
     public ResponseEntity<User> register(@RequestBody UserDTO user) {
         try {
-            User registeredUser = userService.registerUser(Util.mapUserDTOToUser(user));
-            return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+            return ResponseEntity.ok(userService.registerUser(Util.mapUserDTOToUser(user)));
         } catch (CustomExceptions.UserAlreadyExistsException e) {
             logger.error(String.format("User already exists: %s", user.getEmail()));
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } catch (CustomExceptions.InvalidEmailException e) {
             logger.error(String.format("Invalid email format for user: %s", user.getEmail()));
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (CustomExceptions.InvalidPasswordException e) {
             logger.error(String.format("Invalid password format for user: %s", user.getEmail()));
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
             logger.error(String.format("Unexpected error: %s", e.getMessage()));
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -54,18 +53,18 @@ public class UserController {
         try {
             User loggedInUser = userService.loginUser(user.getEmail(), user.getPassword());
             if (loggedInUser == null) {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
-            return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
+            return ResponseEntity.ok(loggedInUser);
         } catch (CustomExceptions.UserNotFoundException e) {
             logger.error(String.format("User not found with this email: %s", user.getEmail()));
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (CustomExceptions.InvalidPasswordException e) {
             logger.error("Password is invalid!");
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } catch (Exception e) {
             logger.error("Unexpected error during login: " + e.getMessage(), e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

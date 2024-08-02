@@ -3,7 +3,9 @@ package com.store.project.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.project.controller.UserController;
 import com.store.project.exceptions.CustomExceptions;
+import com.store.project.model.Product;
 import com.store.project.model.User;
+import com.store.project.modelDTO.ProductDTO;
 import com.store.project.modelDTO.UserDTO;
 import com.store.project.modelDTO.UserLoginDTO;
 import org.slf4j.Logger;
@@ -56,12 +58,14 @@ public class Util {
         return user;
     }
 
-    public static User mapUserLoginDTOToUser(UserLoginDTO userDTO) {
-        User user = new User();
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
+    public static Product mapProductDTOtoProduct(ProductDTO productDTO) {
+        Product product = new Product();
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDTO.getPrice());
+        product.setQuantity(productDTO.getQuantity());
 
-        return user;
+        return product;
     }
 
     public static String asJsonString(final Object obj) {

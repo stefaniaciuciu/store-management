@@ -11,7 +11,6 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String productKey;
     private String name;
     private String description;
     private double price;
@@ -22,18 +21,6 @@ public class Product {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getProductKey() {
-        return productKey;
-    }
-
-    public void setProductKey(String productKey) {
-        this.productKey = productKey;
     }
 
     public String getName() {
@@ -71,7 +58,6 @@ public class Product {
     @Override
     public String toString() {
         return "Product{" +
-                "productKey='" + productKey + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
@@ -85,11 +71,11 @@ public class Product {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return Double.compare(price, product.price) == 0 && quantity == product.quantity && Objects.equals(id, product.id) && Objects.equals(productKey, product.productKey) && Objects.equals(name, product.name) && Objects.equals(description, product.description);
+        return Double.compare(price, product.price) == 0 && quantity == product.quantity && Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(description, product.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, productKey, name, description, price, quantity);
+        return Objects.hash(id, name, description, price, quantity);
     }
 }

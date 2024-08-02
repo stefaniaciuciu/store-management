@@ -41,7 +41,7 @@ public class TestUserController {
         mockMvc.perform(MockMvcRequestBuilders.post("/user/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user)))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
         verify(userService, times(1)).registerUser(any(User.class));
     }
