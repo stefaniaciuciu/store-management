@@ -7,6 +7,8 @@ import com.store.project.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -18,27 +20,22 @@ public class UserService {
 
     public User registerUser(User user) {
         try {
-            boolean passwordIsValidated = Util.validatePassword(user.getPassword());
-            boolean emailIsValidated = Util.validateEmail(user.getEmail());
+            //Util.validatePassword(user.getPassword());
+            Util.validateEmail(user.getEmail());
+            boolean userExists = getUserByEmail(user.getEmail()) != null;
 
-            if (!passwordIsValidated) {
-                throw new CustomExceptions.InvalidPasswordException("Password does not meet the criteria.");
-            }
-            if (!emailIsValidated) {
-                throw new CustomExceptions.InvalidEmailException("Email is not valid.");
-            }
-            if (getUserByEmail(user.getEmail()) != null) {
-                throw new CustomExceptions.UserAlreadyExistsException("User with this email already exists.");
+            if (userExists) {
+                throw new CustomExceptions.UserAlreadyExistsException("User already exists");
             }
 
             return userRepository.save(user);
-        } catch (CustomExceptions.InvalidPasswordException | CustomExceptions.InvalidEmailException |
-                 CustomExceptions.InvalidPhoneNumberException | CustomExceptions.UserAlreadyExistsException e) {
-            throw new RuntimeException("User can not be registered: " + e.getMessage(), e);
+        } catch (CustomExceptions.InvalidPasswordException | CustomExceptions.InvalidEmailException | CustomExceptions.UserAlreadyExistsException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException("Unexpected error during user registration", e);
         }
     }
+
 
     public User loginUser(User user) {
         try {
@@ -59,18 +56,18 @@ public class UserService {
 
     public User getUserByEmail(String email) {
         try {
-            return userRepository.findByEmail(email).get();
+            return userRepository.findByEmail(email);
         } catch(Exception e) {
             throw new RuntimeException("User can not be found ", e);
         }
     }
 
-    public User getUserById(Long id) {
-        return userRepository.findById(id).get();
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
     }
 
     public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username).get();
+        return userRepository.findByUsername(username);
     }
 
 }
