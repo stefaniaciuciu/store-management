@@ -48,20 +48,28 @@ public class UserService {
         }
     }
 
-
-    public User loginUser(User user) {
+    public User loginUser(String email, String password) {
         try {
-            User existingUser = getUserByEmail(user.getEmail());
+            // Retrieve user by email
+            User existingUser = getUserByEmail(email);
             if (existingUser == null) {
                 throw new CustomExceptions.UserNotFoundException("User with this email does not exist.");
             }
-            if (user.getPassword().equals(existingUser.getPassword())) {
+
+            // Directly compare the provided password with the stored password
+            if (!password.equals(existingUser.getPassword())) {
                 throw new CustomExceptions.InvalidPasswordException("Invalid password.");
             }
+
+            // Return the existing user if login is successful
             return existingUser;
         } catch (CustomExceptions.UserNotFoundException | CustomExceptions.InvalidPasswordException e) {
-            throw new RuntimeException("Login failed: " + e.getMessage(), e);
+            // Log and rethrow specific exceptions
+            logger.error("Login failed: " + e.getMessage(), e);
+            throw e;
         } catch (Exception e) {
+            // Log and rethrow unexpected exceptions
+            logger.error("Unexpected error during login: " + e.getMessage(), e);
             throw new RuntimeException("Unexpected error during login", e);
         }
     }

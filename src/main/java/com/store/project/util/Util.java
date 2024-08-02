@@ -15,7 +15,6 @@ import java.util.regex.PatternSyntaxException;
 
 @Component
 public class Util {
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     public static Boolean validateEmail(String email) {
         try {
@@ -29,19 +28,6 @@ public class Util {
             throw new IllegalStateException("Invalid email pattern", e);
         }
     }
-
-//    public static Boolean validatePhoneNumber(String phoneNumber) {
-//        try {
-//            String regexPhoneNumberPattern = "^[0-9]{10}$";
-//            if (Pattern.compile(regexPhoneNumberPattern).matcher(phoneNumber).matches()) {
-//                return true;
-//            } else {
-//                throw new CustomExceptions.InvalidPhoneNumberException("Phone number is not in correct format");
-//            }
-//        } catch (PatternSyntaxException e) {
-//            throw new IllegalStateException("Invalid phone number pattern", e);
-//        }
-//    }
 
     public static void validatePassword(String password) {
         if (password == null) {
