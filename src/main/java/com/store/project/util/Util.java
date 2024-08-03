@@ -64,6 +64,15 @@ public class Util {
         return purchase;
     }
 
+    public static User createUserForTests(String email) {
+        User user = new User();
+        user.setFirstName("Test");
+        user.setLastName("Test");
+        user.setEmail(email);
+        user.setPassword("oldPassword");
+
+        return user;
+    }
     public static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
