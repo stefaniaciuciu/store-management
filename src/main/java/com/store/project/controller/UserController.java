@@ -3,6 +3,7 @@ package com.store.project.controller;
 import com.store.project.exceptions.CustomExceptions;
 import com.store.project.model.User;
 import com.store.project.modelDTO.UserLoginDTO;
+import com.store.project.modelDTO.UserUpdateDTO;
 import com.store.project.util.Util;
 import com.store.project.modelDTO.UserDTO;
 import com.store.project.service.UserService;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 
 import static com.store.project.util.Constants.*;
@@ -45,6 +45,23 @@ public class UserController {
         } catch (Exception e) {
             logger.error(String.format("Unexpected error: %s", e.getMessage()));
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PatchMapping(value = "/updatePassword")
+    public ResponseEntity<User> updatePassword(@RequestBody UserUpdateDTO user) {
+        try {
+            return ResponseEntity.ok(userService.updatePassword(user.getEmail(), user.getOldPassword(),
+                    user.getNewPassword(), user.getConfirmPassword()));
+        } catch (CustomExceptions.UserNotFoundException e) {
+            logger.error("User not found: {}", user.getEmail(), e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (CustomExceptions.InvalidPasswordException e) {
+            logger.error("Invalid password for user: {}", user.getEmail(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            logger.error("Unexpected error: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 

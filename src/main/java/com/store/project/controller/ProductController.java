@@ -31,7 +31,6 @@ public class ProductController {
     @PostMapping("/addNewProduct")
     public ResponseEntity<Product> addNewProduct(@RequestBody ProductDTO productDTO) {
         try {
-
             Product product = Util.mapProductDTOtoProduct(productDTO);
             return ResponseEntity.ok(productService.addNewProduct(product));
         } catch(Exception e) {

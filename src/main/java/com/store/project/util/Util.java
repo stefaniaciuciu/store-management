@@ -23,22 +23,16 @@ public class Util {
 
     public static Boolean validateEmail(String email) {
         String regexEmailPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
-        if (Pattern.matches(regexEmailPattern, email)) {
-            return true;
-        } else {
-            throw new CustomExceptions.InvalidEmailException("Email is not in correct format!");
-        }
+        return Pattern.matches(regexEmailPattern, email);
     }
 
-    public static void validatePassword(String password) {
+    public static Boolean validatePassword(String password) {
         if (password == null) {
-            throw new CustomExceptions.InvalidPasswordException("Password is empty!");
+            return false;
         }
 
         String regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,20}$";
-        if (!Pattern.matches(regex, password)) {
-            throw new CustomExceptions.InvalidPasswordException("Password is not in correct format!");
-        }
+        return Pattern.matches(regex, password);
     }
 
     public static User mapUserDTOToUser(UserDTO userDTO) {
