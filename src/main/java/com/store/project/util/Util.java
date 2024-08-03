@@ -64,12 +64,12 @@ public class Util {
         return purchase;
     }
 
-    public static User createUserForTests(String email) {
+    public static User createUserForTests() {
         User user = new User();
         user.setFirstName("Test");
         user.setLastName("Test");
-        user.setEmail(email);
-        user.setPassword("oldPassword");
+        user.setEmail("testEmailAddress3@gmail.com");
+        user.setPassword("oldPassword12@");
 
         return user;
     }

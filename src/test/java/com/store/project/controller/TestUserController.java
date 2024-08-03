@@ -3,6 +3,7 @@ package com.store.project.controller;
 import com.store.project.exceptions.CustomExceptions;
 import com.store.project.model.User;
 import com.store.project.service.UserService;
+import com.store.project.util.Util;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,11 +32,7 @@ public class TestUserController {
 
     @Test
     public void testRegisterUserOK() throws Exception {
-        User user = new User();
-        user.setFirstName("Test");
-        user.setLastName("Test");
-        user.setEmail("email@email.com");
-        user.setPassword("Password12@");
+        User user = Util.createUserForTests();
 
         when(userService.registerUser(any(User.class))).thenReturn(user);
         mockMvc.perform(MockMvcRequestBuilders.post("/user/register")
@@ -48,11 +45,7 @@ public class TestUserController {
 
     @Test
     public void testRegisterUserInvalidEmail() throws Exception {
-        User user = new User();
-        user.setFirstName("Test");
-        user.setLastName("Test");
-        user.setEmail("emailemail.com");
-        user.setPassword("Password12@");
+        User user = Util.createUserForTests();
 
         doThrow(new CustomExceptions.InvalidEmailException("Invalid email format"))
                 .when(userService).registerUser(any(User.class));
