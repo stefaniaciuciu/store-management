@@ -22,31 +22,22 @@ import java.util.regex.PatternSyntaxException;
 public class Util {
 
     public static Boolean validateEmail(String email) {
-        try {
-            String regexEmailPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
-            if (Pattern.compile(regexEmailPattern).matcher(email).matches()) {
-                return true;
-            } else {
-                throw new CustomExceptions.InvalidEmailException("Email is not in correct format");
-            }
-        } catch (PatternSyntaxException e) {
-            throw new IllegalStateException("Invalid email pattern", e);
+        String regexEmailPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+        if (Pattern.matches(regexEmailPattern, email)) {
+            return true;
+        } else {
+            throw new CustomExceptions.InvalidEmailException("Email is not in correct format!");
         }
     }
 
     public static void validatePassword(String password) {
         if (password == null) {
-            throw new CustomExceptions.InvalidPasswordException("Password is empty");
+            throw new CustomExceptions.InvalidPasswordException("Password is empty!");
         }
 
         String regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,20}$";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(password);
-
-        if (!matcher.matches()) {
-            throw new CustomExceptions.InvalidPasswordException("Password is not in correct format. It should include: " +
-                    "at least one digit, one lowercase letter, one uppercase letter, one special character, " +
-                    "and be between 8 to 20 characters long with no spaces.");
+        if (!Pattern.matches(regex, password)) {
+            throw new CustomExceptions.InvalidPasswordException("Password is not in correct format!");
         }
     }
 

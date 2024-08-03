@@ -26,8 +26,7 @@ public class UserService {
         try {
             Util.validatePassword(user.getPassword());
             Util.validateEmail(user.getEmail());
-            boolean userExists = getUserByEmail(user.getEmail()) != null;
-
+            boolean userExists = Optional.ofNullable(getUserByEmail(user.getEmail())).isPresent();
             if (userExists) {
                 throw new CustomExceptions.UserAlreadyExistsException("User already exists");
             }
@@ -38,10 +37,10 @@ public class UserService {
             throw e;
         } catch (CustomExceptions.InvalidEmailException e) {
             logger.error("Invalid email format for user: {}", user.getEmail(), e);
-            throw e; // Optional: Custom handling or additional context can be added here
+            throw e;
         } catch (CustomExceptions.UserAlreadyExistsException e) {
             logger.error("User already exists: {}", user.getEmail(), e);
-            throw e; // Optional: Custom handling or additional context can be added here
+            throw e;
         } catch (Exception e) {
             logger.error("Unexpected error during user registration for user: {}", user.getEmail(), e);
             throw new RuntimeException("Unexpected error during user registration", e);
@@ -50,25 +49,19 @@ public class UserService {
 
     public User loginUser(String email, String password) {
         try {
-            // Retrieve user by email
             User existingUser = getUserByEmail(email);
             if (existingUser == null) {
                 throw new CustomExceptions.UserNotFoundException("User with this email does not exist.");
             }
-
-            // Directly compare the provided password with the stored password
             if (!password.equals(existingUser.getPassword())) {
                 throw new CustomExceptions.InvalidPasswordException("Invalid password.");
             }
 
-            // Return the existing user if login is successful
             return existingUser;
         } catch (CustomExceptions.UserNotFoundException | CustomExceptions.InvalidPasswordException e) {
-            // Log and rethrow specific exceptions
             logger.error("Login failed: " + e.getMessage(), e);
             throw e;
         } catch (Exception e) {
-            // Log and rethrow unexpected exceptions
             logger.error("Unexpected error during login: " + e.getMessage(), e);
             throw new RuntimeException("Unexpected error during login", e);
         }
