@@ -19,20 +19,32 @@ public class ProductService {
     }
 
     public Product updateProduct(Long productId, Product product) {
-        try {
-            Product dbProduct = productRepository.findById(productId).get();
+        Product dbProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-            dbProduct.setQuantity(product.getQuantity());
-            dbProduct.setName(product.getName());
-            dbProduct.setDescription(product.getDescription());
-            dbProduct.setPrice(product.getPrice());
+        dbProduct.setQuantity(product.getQuantity());
+        dbProduct.setName(product.getName());
+        dbProduct.setDescription(product.getDescription());
+        dbProduct.setPrice(product.getPrice());
 
-            return productRepository.save(dbProduct);
-        }
-        catch (Exception e) {
-            return null;
-        }
+        return productRepository.save(dbProduct);
     }
 
+    public Product updateProductPrice(Double price, Long id) {
+        Product dbProduct = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        dbProduct.setPrice(price);
+        return productRepository.save(dbProduct);
+    }
+
+    public Product showProduct(Long id) {
+        return productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+    }
+
+    public void deleteProduct(Long id) {
+        productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+        productRepository.deleteById(id);
+    }
 
 }

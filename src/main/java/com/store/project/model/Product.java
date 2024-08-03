@@ -3,6 +3,7 @@ package com.store.project.model;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -15,9 +16,8 @@ public class Product {
     private String description;
     private double price;
     private int quantity;
-
-    @OneToMany(mappedBy = "product")
-    private ArrayList<Purchase> purchases;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Purchase> purchases;
 
     public Long getId() {
         return id;
@@ -53,6 +53,14 @@ public class Product {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public List<Purchase> getPurchases() {
+        return purchases;
+    }
+
+    public void setPurchases(List<Purchase> purchases) {
+        this.purchases = purchases;
     }
 
     @Override
