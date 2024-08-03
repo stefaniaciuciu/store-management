@@ -64,26 +64,27 @@ public class Product {
     }
 
     @Override
-    public String toString() {
-        return "Product{" +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", quantity=" + quantity +
-                ", id=" + id +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return Double.compare(price, product.price) == 0 && quantity == product.quantity && Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(description, product.description);
+        return Double.compare(price, product.price) == 0 && quantity == product.quantity && Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(description, product.description) && Objects.equals(purchases, product.purchases);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, price, quantity);
+        return Objects.hash(id, name, description, price, quantity, purchases);
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", purchases=" + purchases +
+                '}';
     }
 }

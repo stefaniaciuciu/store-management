@@ -13,7 +13,7 @@ public class Purchase {
     private String productName;
     private int quantity;
     private double price;
-    private Date date;
+    private String date;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -55,12 +55,28 @@ public class Purchase {
         this.price = price;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     @Override
@@ -68,12 +84,12 @@ public class Purchase {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Purchase purchase = (Purchase) o;
-        return quantity == purchase.quantity && Double.compare(price, purchase.price) == 0 && Objects.equals(id, purchase.id) && Objects.equals(productName, purchase.productName) && Objects.equals(date, purchase.date);
+        return quantity == purchase.quantity && Double.compare(price, purchase.price) == 0 && Objects.equals(id, purchase.id) && Objects.equals(productName, purchase.productName) && Objects.equals(date, purchase.date) && Objects.equals(user, purchase.user) && Objects.equals(product, purchase.product);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, productName, quantity, price, date);
+        return Objects.hash(id, productName, quantity, price, date, user, product);
     }
 
     @Override
@@ -83,7 +99,9 @@ public class Purchase {
                 ", productName='" + productName + '\'' +
                 ", quantity=" + quantity +
                 ", price=" + price +
-                ", date=" + date +
+                ", date='" + date + '\'' +
+                ", user=" + user +
+                ", product=" + product +
                 '}';
     }
 }

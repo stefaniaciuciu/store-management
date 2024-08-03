@@ -1,8 +1,10 @@
 package com.store.project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -20,8 +22,9 @@ public class User {
     @Column(unique = true)
     private String phone;
 
-    @OneToMany(mappedBy = "user")
-    private ArrayList<Purchase> purchases;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Purchase> purchases = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -71,17 +74,33 @@ public class User {
         this.phone = phone;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public List<Purchase> getPurchases() {
+        return purchases;
+    }
+
+    public void setPurchases(List<Purchase> purchases) {
+        this.purchases = purchases;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone);
+        return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone) && Objects.equals(purchases, user.purchases);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, username, password, email, phone);
+        return Objects.hash(id, firstName, lastName, username, password, email, phone, purchases);
     }
 
     @Override
@@ -94,6 +113,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
+                ", purchases=" + purchases +
                 '}';
     }
 }

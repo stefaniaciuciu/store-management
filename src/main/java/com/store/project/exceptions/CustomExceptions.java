@@ -34,10 +34,17 @@ public class CustomExceptions {
         }
     }
 
-    public class ProductNotFoundException extends RuntimeException {
+    public static class ProductNotFoundException extends RuntimeException {
         public ProductNotFoundException(String message) {
             super(message);
         }
     }
+
+    public static class PurchaseNotFoundException extends RuntimeException {
+        public PurchaseNotFoundException(String message) {
+            super(message);
+        }
+    }
+
 
 }

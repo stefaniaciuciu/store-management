@@ -6,6 +6,8 @@ public class ProductDTO {
     private double price;
     private int quantity;
 
+    private ProductDTO() {}
+
     public String getName() {
         return name;
     }

@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.project.controller.UserController;
 import com.store.project.exceptions.CustomExceptions;
 import com.store.project.model.Product;
+import com.store.project.model.Purchase;
 import com.store.project.model.User;
 import com.store.project.modelDTO.ProductDTO;
+import com.store.project.modelDTO.PurchaseDTO;
 import com.store.project.modelDTO.UserDTO;
 import com.store.project.modelDTO.UserLoginDTO;
 import org.slf4j.Logger;
@@ -66,6 +68,16 @@ public class Util {
         product.setQuantity(productDTO.getQuantity());
 
         return product;
+    }
+
+    public static Purchase mapPurchaseDTOtoPurchase(PurchaseDTO purchaseDTO) {
+        Purchase purchase = new Purchase();
+        purchase.setProductName(purchaseDTO.getProductName());
+        purchase.setDate(purchaseDTO.getDate());
+        purchase.setPrice(purchaseDTO.getPrice());
+        purchase.setQuantity(purchaseDTO.getQuantity());
+
+        return purchase;
     }
 
     public static String asJsonString(final Object obj) {
