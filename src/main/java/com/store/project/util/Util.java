@@ -74,7 +74,6 @@ public class Util {
         Purchase purchase = new Purchase();
         purchase.setProductName(purchaseDTO.getProductName());
         purchase.setDate(purchaseDTO.getDate());
-        purchase.setPrice(purchaseDTO.getPrice());
         purchase.setQuantity(purchaseDTO.getQuantity());
 
         return purchase;

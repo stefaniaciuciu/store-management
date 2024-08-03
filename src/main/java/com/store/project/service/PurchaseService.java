@@ -44,8 +44,16 @@ public class PurchaseService {
                 .orElseThrow(() -> new CustomExceptions.ProductNotFoundException("Product not found"));
         purchase.setProduct(product);
 
+        purchase.setPrice(purchase.getQuantity()*product.getPrice());
+
         return purchaseRepository.save(purchase);
     }
 
+    public List<Purchase> viewAllPurchasesByUserId(Long userId) {
+        return purchaseRepository.findByUserId(userId);
+    }
 
+    public List<Purchase> viewAllPurchasesOfProduct(Long productId) {
+        return purchaseRepository.findByProductId(productId);
+    }
 }

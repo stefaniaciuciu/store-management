@@ -62,4 +62,24 @@ public class PurchaseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @GetMapping("/viewAllPurchasesByUser/{userId}")
+    public ResponseEntity<List<Purchase>> viewAllPurchases(@PathVariable Long userId) {
+        try {
+            return ResponseEntity.ok(purchaseService.viewAllPurchasesByUserId(userId));
+        } catch(Exception e) {
+            logger.error("An unexpected error occurred", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/viewAllPurchasesOfProduct/{productId}")
+    public ResponseEntity<List<Purchase>> viewAllPurchasesOfProduct(@PathVariable Long productId) {
+        try {
+            return ResponseEntity.ok(purchaseService.viewAllPurchasesOfProduct(productId));
+        } catch(Exception e) {
+            logger.error("An unexpected error occurred", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
