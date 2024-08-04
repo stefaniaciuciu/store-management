@@ -2,8 +2,10 @@ package com.store.project.controller;
 
 import com.store.project.exceptions.CustomExceptions;
 import com.store.project.model.User;
+import com.store.project.modelDTO.LoginResponse;
 import com.store.project.modelDTO.UserLoginDTO;
 import com.store.project.modelDTO.UserUpdateDTO;
+import com.store.project.security.jwt.JwtUtils;
 import com.store.project.util.Util;
 import com.store.project.modelDTO.UserDTO;
 import com.store.project.service.UserService;
@@ -12,8 +14,20 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+
+import javax.naming.AuthenticationException;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.store.project.util.Constants.*;
 
@@ -23,6 +37,11 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
+    @Autowired
+    private JwtUtils jwtUtils;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     public UserController(UserService userService) {
@@ -65,24 +84,45 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = USER_LOGIN_PATH)
-    public ResponseEntity<User> login(@RequestBody UserLoginDTO user) {
-        try {
-            User loggedInUser = userService.loginUser(user.getEmail(), user.getPassword());
-            if (loggedInUser == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }
-            return ResponseEntity.ok(loggedInUser);
-        } catch (CustomExceptions.UserNotFoundException e) {
-            logger.error(String.format("User not found with this email: %s", user.getEmail()));
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (CustomExceptions.InvalidPasswordException e) {
-            logger.error("Password is invalid!");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        } catch (Exception e) {
-            logger.error("Unexpected error during login: " + e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    @PostMapping("/signin")
+    public ResponseEntity<?> authenticateUser(@RequestBody UserLoginDTO loginRequest) {
+        Authentication authentication;
+        authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginRequest.getEmail(), loginRequest.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
+
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+
+        LoginResponse response = new LoginResponse(userDetails.getUsername(), roles, jwtToken);
+
+        return ResponseEntity.ok(response);
     }
+//    @GetMapping(value = USER_LOGIN_PATH)
+//
+//    public ResponseEntity<User> login(@RequestBody UserLoginDTO user) {
+//        try {
+//            User loggedInUser = userService.loginUser(user.getEmail(), user.getPassword());
+//            if (loggedInUser == null) {
+//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//            }
+//            return ResponseEntity.ok(loggedInUser);
+//        } catch (CustomExceptions.UserNotFoundException e) {
+//            logger.error(String.format("User not found with this email: %s", user.getEmail()));
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        } catch (CustomExceptions.InvalidPasswordException e) {
+//            logger.error("Password is invalid!");
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        } catch (Exception e) {
+//            logger.error("Unexpected error during login: " + e.getMessage(), e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
 
 }
