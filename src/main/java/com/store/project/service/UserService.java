@@ -9,6 +9,7 @@ import com.store.project.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -37,6 +38,10 @@ public class UserService {
             throw new CustomExceptions.UserAlreadyExistsException(USER_ALREADY_EXISTS);
         }
 
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String encodedPassword = encoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+
         return userRepository.save(user);
     }
 
@@ -45,7 +50,9 @@ public class UserService {
         if (existingUser == null) {
             throw new CustomExceptions.UserNotFoundException(USER_NOT_FOUND);
         }
-        if (!password.equals(existingUser.getPassword())) {
+
+        BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+        if (!bcrypt.matches(password, existingUser.getPassword())) {
             throw new CustomExceptions.InvalidPasswordException(String.format(INVALID_PASSWORD_FORMAT,
                     existingUser.getEmail()));
         }
@@ -60,7 +67,8 @@ public class UserService {
         if(!Util.validatePassword(newPassword)) {
             throw new CustomExceptions.InvalidPasswordException(INVALID_PASSWORD_FORMAT);
         }
-        if (!password.equals(existingUser.getPassword())) {
+        BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+        if (!bcrypt.matches(password, existingUser.getPassword())) {
             throw new CustomExceptions.InvalidPasswordException(WRONG_PASSWORD);
         }
         if(!newPassword.equals(confirmPassword)) {
