@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.store.project.util.Constants.PURCHASE_CONTROLLER_PATH;
+import static com.store.project.util.Constants.*;
 
 @RestController
 @RequestMapping(PURCHASE_CONTROLLER_PATH)
@@ -28,7 +28,7 @@ public class PurchaseController {
         this.purchaseService = purchaseService;
     }
 
-    @GetMapping("/getAllPurchases")
+    @GetMapping(GET_ALL_PURCHASES)
     public ResponseEntity<List<Purchase>> getAllPurchases() {
         try {
             return ResponseEntity.ok(purchaseService.getAllPurchases());
@@ -38,7 +38,7 @@ public class PurchaseController {
         }
     }
 
-    @GetMapping("/getPurchase/{id}")
+    @GetMapping(GET_PURCHASE_BY_ID)
     public ResponseEntity<Purchase> getPurchaseById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(purchaseService.getPurchaseById(id));
@@ -51,7 +51,7 @@ public class PurchaseController {
         }
     }
 
-    @PostMapping("/addPurchase/{userId}/{productId}")
+    @PostMapping(ADD_PURCHASE)
     public ResponseEntity<Purchase> addPurchase(@RequestBody PurchaseDTO purchase, @PathVariable Long userId,
                                                 @PathVariable Long productId) {
         try {
@@ -63,7 +63,7 @@ public class PurchaseController {
         }
     }
 
-    @GetMapping("/viewAllPurchasesByUser/{userId}")
+    @GetMapping(VIEW_PURCHASES_BY_USER)
     public ResponseEntity<List<Purchase>> viewAllPurchases(@PathVariable Long userId) {
         try {
             return ResponseEntity.ok(purchaseService.viewAllPurchasesByUserId(userId));
@@ -73,7 +73,7 @@ public class PurchaseController {
         }
     }
 
-    @GetMapping("/viewAllPurchasesOfProduct/{productId}")
+    @GetMapping(VIEW_PURCHASES_OF_PRODUCT)
     public ResponseEntity<List<Purchase>> viewAllPurchasesOfProduct(@PathVariable Long productId) {
         try {
             return ResponseEntity.ok(purchaseService.viewAllPurchasesOfProduct(productId));

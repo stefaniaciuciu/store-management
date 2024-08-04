@@ -48,7 +48,7 @@ public class UserController {
         }
     }
 
-    @PatchMapping(value = "/updatePassword")
+    @PatchMapping(value = USER_UPDATE_PASSWORD)
     public ResponseEntity<User> updatePassword(@RequestBody UserUpdateDTO user) {
         try {
             return ResponseEntity.ok(userService.updatePassword(user.getEmail(), user.getOldPassword(),

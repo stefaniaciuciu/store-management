@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static com.store.project.util.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -23,13 +24,12 @@ public class TestUserService {
     void testUpdatePasswordOk() {
         User user = Util.createUserForTests();
         userRepository.save(user);
-        String correctPassword = "newPassword12&";
 
         User updatedUser = userService.updatePassword(user.getEmail(), user.getPassword(),
-                correctPassword, correctPassword);
+                CORRECT_NEW_PASSOWRD, CORRECT_NEW_PASSOWRD);
 
         assertNotNull(updatedUser);
-        assertEquals(correctPassword, updatedUser.getPassword());
+        assertEquals(CORRECT_NEW_PASSOWRD, updatedUser.getPassword());
 
         userRepository.delete(user);
     }
@@ -38,12 +38,10 @@ public class TestUserService {
     void testUpdatePasswordFailEmail() {
         User user = Util.createUserForTests();
         userRepository.save(user);
-        String nonExistingEmail = "nonexistingemail@gmail.com";
-        String correctNewPassword = "newPassword12&";
 
         assertThrows(CustomExceptions.UserNotFoundException.class, () -> {
-            userService.updatePassword(nonExistingEmail, user.getPassword(),
-                    correctNewPassword, correctNewPassword);
+            userService.updatePassword(NON_EXISTING_EMAIL, user.getPassword(),
+                    CORRECT_NEW_PASSOWRD, CORRECT_NEW_PASSOWRD);
         });
 
         userRepository.delete(user);
@@ -53,12 +51,10 @@ public class TestUserService {
     void testUpdatePasswordFailWrongOldPassword() {
         User user = Util.createUserForTests();
         userRepository.save(user);
-        String wrongOldPassword = "wrongPassword";
-        String correctNewPassword = "newPassword12&";
 
         assertThrows(CustomExceptions.InvalidPasswordException.class, () -> {
-            userService.updatePassword(user.getEmail(), wrongOldPassword,
-                    correctNewPassword, correctNewPassword);
+            userService.updatePassword(user.getEmail(), WRONG_OLD_PASSWORD,
+                    CORRECT_NEW_PASSOWRD, CORRECT_NEW_PASSOWRD);
         });
 
         userRepository.delete(user);
@@ -68,12 +64,10 @@ public class TestUserService {
     void testUpdatePasswordFailInvalidNewPassword() {
         User user = Util.createUserForTests();
         userRepository.save(user);
-        String correctOldPassword = "oldPassword";
-        String invalidNewPassword = "newPassword";
 
         assertThrows(CustomExceptions.InvalidPasswordException.class, () -> {
-            userService.updatePassword(user.getEmail(), correctOldPassword,
-                    invalidNewPassword, invalidNewPassword);
+            userService.updatePassword(user.getEmail(), TEST_PASSWORD,
+                    INVALID_NEW_PASSWORD, INVALID_NEW_PASSWORD);
         });
 
         userRepository.delete(user);
@@ -83,13 +77,10 @@ public class TestUserService {
     void testUpdatePasswordFailDifferentNewPassword() {
         User user = Util.createUserForTests();
         userRepository.save(user);
-        String correctOldPassword = "oldPassword";
-        String correctNewPassword = "newPassword12&";
-        String differentNewPassword = "wrongPassword";
 
         assertThrows(CustomExceptions.InvalidPasswordException.class, () -> {
-            userService.updatePassword(user.getEmail(), correctOldPassword,
-                    correctNewPassword, differentNewPassword);
+            userService.updatePassword(user.getEmail(), TEST_PASSWORD,
+                    CORRECT_NEW_PASSOWRD, WRONG_OLD_PASSWORD);
         });
 
         userRepository.delete(user);
@@ -111,10 +102,9 @@ public class TestUserService {
     void testLoginFailUserNotFound() {
         User user = Util.createUserForTests();
         userRepository.save(user);
-        String nonExistingEmail = "nonexistingemail@gmail.com";
 
         assertThrows(CustomExceptions.UserNotFoundException.class, () -> {
-            userService.loginUser(nonExistingEmail, user.getPassword());
+            userService.loginUser(NON_EXISTING_EMAIL, user.getPassword());
         });
 
         userRepository.delete(user);
@@ -124,10 +114,9 @@ public class TestUserService {
     void testLoginFailWrongPassword() {
         User user = Util.createUserForTests();
         userRepository.save(user);
-        String wrongPassword = "wrongPassword";
 
         assertThrows(CustomExceptions.InvalidPasswordException.class, () -> {
-            userService.loginUser(user.getEmail(), wrongPassword);
+            userService.loginUser(user.getEmail(), CORRECT_NEW_PASSOWRD);
         });
 
         userRepository.delete(user);
@@ -159,7 +148,7 @@ public class TestUserService {
     @Test
     void testRegisterUserFailInvalidEmail() {
         User user = Util.createUserForTests();
-        user.setEmail("invalidEmail.com");
+        user.setEmail(INVALID_EMAIL);
 
         assertThrows(CustomExceptions.InvalidEmailException.class, () -> {
             userService.registerUser(user);
@@ -171,7 +160,7 @@ public class TestUserService {
     @Test
     void testRegisterUserFailInvalidPassword() {
         User user = Util.createUserForTests();
-        user.setPassword("Password");
+        user.setPassword(INVALID_NEW_PASSWORD);
 
         assertThrows(CustomExceptions.InvalidPasswordException.class, () -> {
             userService.registerUser(user);

@@ -3,6 +3,7 @@ package com.store.project.service;
 import com.store.project.exceptions.CustomExceptions;
 import com.store.project.model.Product;
 import com.store.project.repository.ProductRepository;
+import static com.store.project.util.Constants.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class ProductService {
 
     public Product updateProduct(Long productId, Product product) {
         Product dbProduct = productRepository.findById(productId)
-                .orElseThrow(() -> new CustomExceptions.ProductNotFoundException("Product not found"));
+                .orElseThrow(() -> new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND));
 
         dbProduct.setQuantity(product.getQuantity());
         dbProduct.setName(product.getName());
@@ -33,18 +34,20 @@ public class ProductService {
 
     public Product updateProductPrice(Double price, Long id) {
         Product dbProduct = productRepository.findById(id)
-                .orElseThrow(() -> new CustomExceptions.ProductNotFoundException("Product not found"));
+                .orElseThrow(() -> new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND));
 
         dbProduct.setPrice(price);
         return productRepository.save(dbProduct);
     }
 
     public Product showProduct(Long id) {
-        return productRepository.findById(id).orElseThrow(() -> new CustomExceptions.ProductNotFoundException("Product not found"));
+        return productRepository.findById(id).orElseThrow(() ->
+                new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND));
     }
 
     public void deleteProduct(Long id) {
-        productRepository.findById(id).orElseThrow(() -> new CustomExceptions.ProductNotFoundException("Product not found"));
+        productRepository.findById(id).orElseThrow(() ->
+                new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND));
         productRepository.deleteById(id);
     }
 

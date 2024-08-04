@@ -4,6 +4,7 @@ import com.store.project.controller.UserController;
 import com.store.project.exceptions.CustomExceptions;
 import com.store.project.model.User;
 import com.store.project.repository.UserRepository;
+import static com.store.project.util.Constants.*;
 import com.store.project.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,16 +25,16 @@ public class UserService {
 
     public User registerUser(User user) {
         if(!Util.validatePassword(user.getPassword())) {
-            throw new CustomExceptions.InvalidPasswordException(String.format("Invalid password format for user: %s",
+            throw new CustomExceptions.InvalidPasswordException(String.format(INVALID_PASSWORD_FORMAT,
                     user.getEmail()));
         }
         if(!Util.validateEmail(user.getEmail())) {
-            throw new CustomExceptions.InvalidEmailException(String.format("Invalid email format for user: %s",
+            throw new CustomExceptions.InvalidEmailException(String.format(INVALID_EMAIL_FORMAT,
                     user.getEmail()));
         }
         boolean userExists = Optional.ofNullable(getUserByEmail(user.getEmail())).isPresent();
         if (userExists) {
-            throw new CustomExceptions.UserAlreadyExistsException("User already exists");
+            throw new CustomExceptions.UserAlreadyExistsException(USER_ALREADY_EXISTS);
         }
 
         return userRepository.save(user);
@@ -42,10 +43,11 @@ public class UserService {
     public User loginUser(String email, String password) {
         User existingUser = getUserByEmail(email);
         if (existingUser == null) {
-            throw new CustomExceptions.UserNotFoundException("User with this email does not exist.");
+            throw new CustomExceptions.UserNotFoundException(USER_NOT_FOUND);
         }
         if (!password.equals(existingUser.getPassword())) {
-            throw new CustomExceptions.InvalidPasswordException("Invalid password.");
+            throw new CustomExceptions.InvalidPasswordException(String.format(INVALID_PASSWORD_FORMAT,
+                    existingUser.getEmail()));
         }
         return existingUser;
     }
@@ -53,16 +55,16 @@ public class UserService {
     public User updatePassword(String email, String password, String newPassword, String confirmPassword) {
         User existingUser = getUserByEmail(email);
         if (existingUser == null) {
-            throw new CustomExceptions.UserNotFoundException("User with this email does not exist.");
+            throw new CustomExceptions.UserNotFoundException(USER_NOT_FOUND);
         }
         if(!Util.validatePassword(newPassword)) {
-            throw new CustomExceptions.InvalidPasswordException("Invalid password.");
+            throw new CustomExceptions.InvalidPasswordException(INVALID_PASSWORD_FORMAT);
         }
         if (!password.equals(existingUser.getPassword())) {
-            throw new CustomExceptions.InvalidPasswordException("Passwords do not match.");
+            throw new CustomExceptions.InvalidPasswordException(WRONG_PASSWORD);
         }
         if(!newPassword.equals(confirmPassword)) {
-            throw new CustomExceptions.InvalidPasswordException("Passwords do not match.");
+            throw new CustomExceptions.InvalidPasswordException(PASSWORDS_DO_NOT_MATCH);
         }
         existingUser.setPassword(newPassword);
         return userRepository.save(existingUser);
@@ -74,7 +76,7 @@ public class UserService {
 
     public Optional<User> getUserById(Long id) {
         return Optional.of(userRepository.findById(id))
-                .orElseThrow(() -> new CustomExceptions.UserNotFoundException("User can not be found"));
+                .orElseThrow(() -> new CustomExceptions.UserNotFoundException(USER_NOT_FOUND));
     }
 
 }

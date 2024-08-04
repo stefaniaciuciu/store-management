@@ -1,22 +1,17 @@
 package com.store.project.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.store.project.controller.UserController;
-import com.store.project.exceptions.CustomExceptions;
 import com.store.project.model.Product;
 import com.store.project.model.Purchase;
 import com.store.project.model.User;
 import com.store.project.modelDTO.ProductDTO;
 import com.store.project.modelDTO.PurchaseDTO;
 import com.store.project.modelDTO.UserDTO;
-import com.store.project.modelDTO.UserLoginDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
+
+import static com.store.project.util.Constants.*;
 
 @Component
 public class Util {
@@ -66,10 +61,10 @@ public class Util {
 
     public static User createUserForTests() {
         User user = new User();
-        user.setFirstName("Test");
-        user.setLastName("Test");
-        user.setEmail("testEmailAddress3@gmail.com");
-        user.setPassword("oldPassword12@");
+        user.setFirstName(TEST_USER_NAME);
+        user.setLastName(TEST_USER_NAME);
+        user.setEmail(TEST_EMAIL_ADDRESS);
+        user.setPassword(TEST_PASSWORD);
 
         return user;
     }

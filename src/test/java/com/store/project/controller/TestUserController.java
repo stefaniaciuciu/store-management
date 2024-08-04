@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static com.store.project.util.Constants.*;
 import static com.store.project.util.Util.asJsonString;
 import static org.mockito.Mockito.*;
 
@@ -36,7 +37,7 @@ public class TestUserController {
         User user = Util.createUserForTests();
 
         when(userService.registerUser(any(User.class))).thenReturn(user);
-        mockMvc.perform(MockMvcRequestBuilders.post("/user/register")
+        mockMvc.perform(MockMvcRequestBuilders.post(USER_CONTROLLER_PATH + USER_REGISTER_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -48,10 +49,10 @@ public class TestUserController {
     public void testRegisterUserAlreadyExists() throws Exception {
         User user = Util.createUserForTests();
 
-        doThrow(new CustomExceptions.UserAlreadyExistsException(String.format("User already exists: %s", user.getEmail())))
+        doThrow(new CustomExceptions.UserAlreadyExistsException(USER_ALREADY_EXISTS))
                 .when(userService).registerUser(any(User.class));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/user/register")
+        mockMvc.perform(MockMvcRequestBuilders.post(USER_CONTROLLER_PATH + USER_REGISTER_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user)))
                 .andExpect(MockMvcResultMatchers.status().isConflict());
@@ -63,10 +64,10 @@ public class TestUserController {
     public void testRegisterUserInvalidEmail() throws Exception {
         User user = Util.createUserForTests();
 
-        doThrow(new CustomExceptions.InvalidEmailException("Invalid email format"))
+        doThrow(new CustomExceptions.InvalidEmailException(INVALID_EMAIL_FORMAT))
                 .when(userService).registerUser(any(User.class));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/user/register")
+        mockMvc.perform(MockMvcRequestBuilders.post(USER_CONTROLLER_PATH + USER_REGISTER_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -78,10 +79,10 @@ public class TestUserController {
     public void testRegisterUserInvalidPassword() throws Exception {
         User user = Util.createUserForTests();
 
-        doThrow(new CustomExceptions.InvalidPasswordException("Invalid password format"))
+        doThrow(new CustomExceptions.InvalidPasswordException(INVALID_PASSWORD_FORMAT))
                 .when(userService).registerUser(any(User.class));
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/user/register")
+        mockMvc.perform(MockMvcRequestBuilders.post(USER_CONTROLLER_PATH + USER_REGISTER_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -100,7 +101,7 @@ public class TestUserController {
 
         when(userService.updatePassword(user.getEmail(),user.getPassword(), newPassword, newPassword))
                 .thenReturn(user);
-        mockMvc.perform(MockMvcRequestBuilders.patch("/user/updatePassword")
+        mockMvc.perform(MockMvcRequestBuilders.patch(USER_CONTROLLER_PATH + USER_UPDATE_PASSWORD)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userUpdateDTOJson))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -118,10 +119,10 @@ public class TestUserController {
                 user.getEmail(), user.getPassword(), newPassword, newPassword
         );
 
-        doThrow(new CustomExceptions.UserNotFoundException("User not found"))
+        doThrow(new CustomExceptions.UserNotFoundException(USER_NOT_FOUND))
                 .when(userService).updatePassword(user.getEmail(),user.getPassword(), newPassword, newPassword);
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/user/updatePassword")
+        mockMvc.perform(MockMvcRequestBuilders.patch(USER_CONTROLLER_PATH + USER_UPDATE_PASSWORD)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userUpdateDTOJson))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
@@ -139,10 +140,10 @@ public class TestUserController {
                 user.getEmail(), user.getPassword(), newPassword, newPassword
         );
 
-        doThrow(new CustomExceptions.InvalidPasswordException("User not found"))
+        doThrow(new CustomExceptions.InvalidPasswordException(USER_NOT_FOUND))
                 .when(userService).updatePassword(user.getEmail(),user.getPassword(), newPassword, newPassword);
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/user/updatePassword")
+        mockMvc.perform(MockMvcRequestBuilders.patch(USER_CONTROLLER_PATH + USER_UPDATE_PASSWORD)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userUpdateDTOJson))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -161,7 +162,7 @@ public class TestUserController {
 
         when(userService.loginUser(user.getEmail(),user.getPassword()))
                 .thenReturn(user);
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/login")
+        mockMvc.perform(MockMvcRequestBuilders.get(USER_CONTROLLER_PATH + USER_LOGIN_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userLoginDTOJson))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -177,10 +178,10 @@ public class TestUserController {
                 user.getEmail(), user.getPassword()
         );
 
-        doThrow(new CustomExceptions.UserNotFoundException("User not found"))
+        doThrow(new CustomExceptions.UserNotFoundException(USER_NOT_FOUND))
                 .when(userService).loginUser(user.getEmail(),user.getPassword());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/login")
+        mockMvc.perform(MockMvcRequestBuilders.get(USER_CONTROLLER_PATH + USER_LOGIN_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userLoginDTOJson))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
@@ -196,10 +197,10 @@ public class TestUserController {
                 user.getEmail(), user.getPassword()
         );
 
-        doThrow(new CustomExceptions.InvalidPasswordException("Password is invalid!"))
+        doThrow(new CustomExceptions.InvalidPasswordException(WRONG_PASSWORD))
                 .when(userService).loginUser(user.getEmail(),user.getPassword());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/login")
+        mockMvc.perform(MockMvcRequestBuilders.get(USER_CONTROLLER_PATH + USER_LOGIN_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userLoginDTOJson))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
