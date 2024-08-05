@@ -15,12 +15,6 @@ public class CustomExceptions {
         }
     }
 
-    public static class InvalidPhoneNumberException extends RuntimeException {
-        public InvalidPhoneNumberException(String message) {
-            super(message);
-        }
-    }
-
     public static class UserAlreadyExistsException extends RuntimeException {
         public UserAlreadyExistsException(String message) {
             super(message);
