@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PurchaseService {
@@ -45,21 +46,27 @@ public class PurchaseService {
     }
 
     public Purchase addPurchase(Purchase purchase, Long userId, Long productId) {
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        optionalUser.ifPresentOrElse(
+                user -> purchase.setUser(user),
+                () -> {
                     logger.error(USER_NOT_FOUND);
-                    return new CustomExceptions.UserNotFoundException(USER_NOT_FOUND);
-                });
-        purchase.setUser(user);
+                    throw new CustomExceptions.UserNotFoundException(USER_NOT_FOUND);
+                }
+        );
 
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> {
-                    logger.error(PRODUCT_NOT_FOUND);
-                    return new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND);
-                });
-        purchase.setProduct(product);
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        optionalProduct.ifPresentOrElse(
+                product -> {
+                    purchase.setProduct(product);
+                    purchase.setPrice(purchase.getQuantity()*product.getPrice());
+                },
+                () -> {
+                    logger.error(USER_NOT_FOUND);
+                    throw new CustomExceptions.UserNotFoundException(USER_NOT_FOUND);
+                }
+        );
 
-        purchase.setPrice(purchase.getQuantity()*product.getPrice());
 
         return purchaseRepository.save(purchase);
     }
