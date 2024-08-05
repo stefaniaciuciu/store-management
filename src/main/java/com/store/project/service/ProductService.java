@@ -4,11 +4,16 @@ import com.store.project.exceptions.CustomExceptions;
 import com.store.project.model.Product;
 import com.store.project.repository.ProductRepository;
 import static com.store.project.util.Constants.*;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProductService {
+
+    Logger logger = LogManager.getLogger(ProductService.class);
 
     private final ProductRepository productRepository;
     @Autowired
@@ -22,7 +27,10 @@ public class ProductService {
 
     public Product updateProduct(Long productId, Product product) {
         Product dbProduct = productRepository.findById(productId)
-                .orElseThrow(() -> new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> {
+                    logger.error(PRODUCT_NOT_FOUND);
+                    return new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND);
+                });
 
         dbProduct.setQuantity(product.getQuantity());
         dbProduct.setName(product.getName());
@@ -34,20 +42,27 @@ public class ProductService {
 
     public Product updateProductPrice(Double price, Long id) {
         Product dbProduct = productRepository.findById(id)
-                .orElseThrow(() -> new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> {
+                    logger.error(PRODUCT_NOT_FOUND);
+                    return new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND);
+                });
 
         dbProduct.setPrice(price);
         return productRepository.save(dbProduct);
     }
 
     public Product showProduct(Long id) {
-        return productRepository.findById(id).orElseThrow(() ->
-                new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND));
+        return productRepository.findById(id).orElseThrow(() -> {
+            logger.error(PRODUCT_NOT_FOUND);
+            return new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND);
+        });
     }
 
     public void deleteProduct(Long id) {
-        productRepository.findById(id).orElseThrow(() ->
-                new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND));
+        productRepository.findById(id).orElseThrow(() -> {
+            logger.error(PRODUCT_NOT_FOUND);
+            return new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND);
+        });
         productRepository.deleteById(id);
     }
 

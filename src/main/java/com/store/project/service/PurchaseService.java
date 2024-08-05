@@ -8,6 +8,9 @@ import com.store.project.repository.ProductRepository;
 import com.store.project.repository.PurchaseRepository;
 import com.store.project.repository.UserRepository;
 import static com.store.project.util.Constants.*;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,8 @@ import java.util.List;
 
 @Service
 public class PurchaseService {
+
+    Logger logger = LogManager.getLogger(PurchaseService.class);
 
     private final PurchaseRepository purchaseRepository;
     private final UserRepository userRepository;
@@ -33,17 +38,25 @@ public class PurchaseService {
     }
 
     public Purchase getPurchaseById(Long id) {
-        return purchaseRepository.findById(id).orElseThrow(() ->
-                new CustomExceptions.PurchaseNotFoundException(PURCHASE_NOT_FOUND));
+        return purchaseRepository.findById(id).orElseThrow(() -> {
+            logger.error(PURCHASE_NOT_FOUND);
+            return new CustomExceptions.PurchaseNotFoundException(PURCHASE_NOT_FOUND);
+        });
     }
 
     public Purchase addPurchase(Purchase purchase, Long userId, Long productId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomExceptions.UserNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> {
+                    logger.error(USER_NOT_FOUND);
+                    return new CustomExceptions.UserNotFoundException(USER_NOT_FOUND);
+                });
         purchase.setUser(user);
 
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> {
+                    logger.error(PRODUCT_NOT_FOUND);
+                    return new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND);
+                });
         purchase.setProduct(product);
 
         purchase.setPrice(purchase.getQuantity()*product.getPrice());
