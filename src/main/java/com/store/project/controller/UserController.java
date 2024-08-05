@@ -39,7 +39,7 @@ public class UserController {
                 user.getNewPassword(), user.getConfirmPassword()));
     }
 
-    @GetMapping(value = USER_LOGIN_PATH)
+    @PostMapping(value = USER_LOGIN_PATH)
     public ResponseEntity<User> login(@RequestBody UserLoginDTO user) {
             User loggedInUser = userService.loginUser(user.getEmail(), user.getPassword());
             if (loggedInUser == null) {

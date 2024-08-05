@@ -48,17 +48,14 @@ public class UserService {
     }
 
     public User loginUser(String email, String password) {
-        User existingUser = getUserByEmail(email);
+        var existingUser = getUserByEmail(email);
         if (existingUser == null) {
-            logger.error(USER_NOT_FOUND);
             throw new CustomExceptions.UserNotFoundException(USER_NOT_FOUND);
         }
 
         BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
         if (!bcrypt.matches(password, existingUser.getPassword())) {
-            logger.error(String.format(INVALID_PASSWORD_FORMAT, existingUser.getEmail()));
-            throw new CustomExceptions.InvalidPasswordException(String.format(INVALID_PASSWORD_FORMAT,
-                    existingUser.getEmail()));
+            throw new CustomExceptions.InvalidPasswordException(WRONG_PASSWORD);
         }
         return existingUser;
     }
@@ -83,7 +80,9 @@ public class UserService {
             logger.error(PASSWORDS_DO_NOT_MATCH);
             throw new CustomExceptions.InvalidPasswordException(PASSWORDS_DO_NOT_MATCH);
         }
-        existingUser.setPassword(newPassword);
+
+        String encodedPassword = bcrypt.encode(newPassword);
+        existingUser.setPassword(encodedPassword);
         return userRepository.save(existingUser);
     }
 

@@ -26,7 +26,7 @@ public class ProductService {
     }
 
     public Product updateProduct(Long productId, Product product) {
-        Product dbProduct = productRepository.findById(productId)
+        var dbProduct = productRepository.findById(productId)
                 .orElseThrow(() -> {
                     logger.error(PRODUCT_NOT_FOUND);
                     return new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND);
@@ -41,7 +41,7 @@ public class ProductService {
     }
 
     public Product updateProductPrice(Double price, Long id) {
-        Product dbProduct = productRepository.findById(id)
+        var dbProduct = productRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.error(PRODUCT_NOT_FOUND);
                     return new CustomExceptions.ProductNotFoundException(PRODUCT_NOT_FOUND);

@@ -45,7 +45,7 @@ public class PurchaseService {
     }
 
     public Purchase addPurchase(Purchase purchase, Long userId, Long productId) {
-        User user = userRepository.findById(userId)
+        var user = userRepository.findById(userId)
                 .orElseThrow(() -> {
                     logger.error(USER_NOT_FOUND);
                     return new CustomExceptions.UserNotFoundException(USER_NOT_FOUND);

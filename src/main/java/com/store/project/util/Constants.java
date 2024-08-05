@@ -42,6 +42,6 @@ public class Constants {
     public static final String WRONG_OLD_PASSWORD = "wrongPassword";
     public static final String INVALID_EMAIL = "invalidEmail.com";
     public static final String NON_EXISTING_EMAIL = "nonexistingemail@gmail.com";
-    public static final String TEST_EMAIL_ADDRESS = "testEmailAddress3@gmail.com";
+    public static final String TEST_EMAIL_ADDRESS = "testEmailAddress19@gmail.com";
 
 }

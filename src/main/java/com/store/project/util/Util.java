@@ -7,6 +7,7 @@ import com.store.project.model.User;
 import com.store.project.modelDTO.ProductDTO;
 import com.store.project.modelDTO.PurchaseDTO;
 import com.store.project.modelDTO.UserDTO;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
@@ -61,10 +62,12 @@ public class Util {
 
     public static User createUserForTests() {
         User user = new User();
+
         user.setFirstName(TEST_USER_NAME);
         user.setLastName(TEST_USER_NAME);
         user.setEmail(TEST_EMAIL_ADDRESS);
         user.setPassword(TEST_PASSWORD);
+        user.setUsername(TEST_EMAIL_ADDRESS);
 
         return user;
     }

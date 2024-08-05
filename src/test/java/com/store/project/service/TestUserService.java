@@ -7,6 +7,7 @@ import com.store.project.util.Util;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static com.store.project.util.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,25 +23,29 @@ public class TestUserService {
 
     @Test
     void testUpdatePasswordOk() {
-        User user = Util.createUserForTests();
+        var user = Util.createUserForTests();
+        BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+        user.setPassword(bcrypt.encode(user.getPassword()));
         userRepository.save(user);
 
-        User updatedUser = userService.updatePassword(user.getEmail(), user.getPassword(),
+        var updatedUser = userService.updatePassword(user.getEmail(), TEST_PASSWORD,
                 CORRECT_NEW_PASSOWRD, CORRECT_NEW_PASSOWRD);
 
         assertNotNull(updatedUser);
-        assertEquals(CORRECT_NEW_PASSOWRD, updatedUser.getPassword());
+        assertTrue(bcrypt.matches(CORRECT_NEW_PASSOWRD, updatedUser.getPassword()));
 
         userRepository.delete(user);
     }
 
     @Test
     void testUpdatePasswordFailEmail() {
-        User user = Util.createUserForTests();
+        var user = Util.createUserForTests();
+        BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+        user.setPassword(bcrypt.encode(user.getPassword()));
         userRepository.save(user);
 
         assertThrows(CustomExceptions.UserNotFoundException.class, () -> {
-            userService.updatePassword(NON_EXISTING_EMAIL, user.getPassword(),
+            userService.updatePassword(NON_EXISTING_EMAIL, TEST_PASSWORD,
                     CORRECT_NEW_PASSOWRD, CORRECT_NEW_PASSOWRD);
         });
 
@@ -49,7 +54,9 @@ public class TestUserService {
 
     @Test
     void testUpdatePasswordFailWrongOldPassword() {
-        User user = Util.createUserForTests();
+        var user = Util.createUserForTests();
+        BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+        user.setPassword(bcrypt.encode(user.getPassword()));
         userRepository.save(user);
 
         assertThrows(CustomExceptions.InvalidPasswordException.class, () -> {
@@ -62,7 +69,9 @@ public class TestUserService {
 
     @Test
     void testUpdatePasswordFailInvalidNewPassword() {
-        User user = Util.createUserForTests();
+        var user = Util.createUserForTests();
+        BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+        user.setPassword(bcrypt.encode(user.getPassword()));
         userRepository.save(user);
 
         assertThrows(CustomExceptions.InvalidPasswordException.class, () -> {
@@ -75,7 +84,9 @@ public class TestUserService {
 
     @Test
     void testUpdatePasswordFailDifferentNewPassword() {
-        User user = Util.createUserForTests();
+        var user = Util.createUserForTests();
+        BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+        user.setPassword(bcrypt.encode(user.getPassword()));
         userRepository.save(user);
 
         assertThrows(CustomExceptions.InvalidPasswordException.class, () -> {
@@ -88,10 +99,12 @@ public class TestUserService {
 
     @Test
     void testLoginOK() {
-        User user = Util.createUserForTests();
+        var user = Util.createUserForTests();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(user);
 
-        User userLoggedIn = userService.loginUser(user.getEmail(), user.getPassword());
+        var userLoggedIn = userService.loginUser(user.getEmail(),TEST_PASSWORD);
         assertNotNull(userLoggedIn);
         assertEquals(user.getEmail(), userLoggedIn.getEmail());
 
@@ -100,11 +113,13 @@ public class TestUserService {
 
     @Test
     void testLoginFailUserNotFound() {
-        User user = Util.createUserForTests();
+        var user = Util.createUserForTests();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(user);
 
         assertThrows(CustomExceptions.UserNotFoundException.class, () -> {
-            userService.loginUser(NON_EXISTING_EMAIL, user.getPassword());
+            userService.loginUser(NON_EXISTING_EMAIL, TEST_PASSWORD);
         });
 
         userRepository.delete(user);
@@ -112,7 +127,9 @@ public class TestUserService {
 
     @Test
     void testLoginFailWrongPassword() {
-        User user = Util.createUserForTests();
+        var user = Util.createUserForTests();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(user);
 
         assertThrows(CustomExceptions.InvalidPasswordException.class, () -> {
@@ -124,18 +141,19 @@ public class TestUserService {
 
     @Test
     void testRegisterUserOk() {
-        User user = Util.createUserForTests();
-        User registeredUser = userService.registerUser(user);
+        var user = Util.createUserForTests();
+        var registeredUser = userService.registerUser(user);
 
         assertNotNull(registeredUser);
-        assertEquals(user.getEmail(), registeredUser.getEmail());
+        BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+        assertTrue(bcrypt.matches(TEST_PASSWORD, registeredUser.getPassword()));
 
         userRepository.delete(user);
     }
 
     @Test
     void testRegisterUserFailUserAlreadyExists() {
-        User user = Util.createUserForTests();
+        var user = Util.createUserForTests();
         userRepository.save(user);
 
         assertThrows(CustomExceptions.UserAlreadyExistsException.class, () -> {
@@ -147,7 +165,7 @@ public class TestUserService {
 
     @Test
     void testRegisterUserFailInvalidEmail() {
-        User user = Util.createUserForTests();
+        var user = Util.createUserForTests();
         user.setEmail(INVALID_EMAIL);
 
         assertThrows(CustomExceptions.InvalidEmailException.class, () -> {
@@ -159,7 +177,7 @@ public class TestUserService {
 
     @Test
     void testRegisterUserFailInvalidPassword() {
-        User user = Util.createUserForTests();
+        var user = Util.createUserForTests();
         user.setPassword(INVALID_NEW_PASSWORD);
 
         assertThrows(CustomExceptions.InvalidPasswordException.class, () -> {
