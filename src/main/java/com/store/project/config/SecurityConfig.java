@@ -16,7 +16,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/user/**")
+                        req.requestMatchers("/**")
                                 .permitAll()
                 )
         ;

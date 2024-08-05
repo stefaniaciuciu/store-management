@@ -21,7 +21,6 @@ import static com.store.project.util.Constants.*;
 @RequestMapping(USER_CONTROLLER_PATH)
 public class UserController {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
 
     @Autowired
@@ -31,58 +30,22 @@ public class UserController {
 
     @PostMapping(value = USER_REGISTER_PATH)
     public ResponseEntity<User> register(@RequestBody UserDTO user) {
-        try {
-            return ResponseEntity.ok(userService.registerUser(Util.mapUserDTOToUser(user)));
-        } catch (CustomExceptions.UserAlreadyExistsException e) {
-            logger.error(String.format("User already exists: %s", user.getEmail()));
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } catch (CustomExceptions.InvalidEmailException e) {
-            logger.error(String.format("Invalid email format for user: %s", user.getEmail()));
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (CustomExceptions.InvalidPasswordException e) {
-            logger.error(String.format("Invalid password format for user: %s", user.getEmail()));
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (Exception e) {
-            logger.error(String.format("Unexpected error: %s", e.getMessage()));
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok(userService.registerUser(Util.mapUserDTOToUser(user)));
     }
 
     @PatchMapping(value = USER_UPDATE_PASSWORD)
     public ResponseEntity<User> updatePassword(@RequestBody UserUpdateDTO user) {
-        try {
-            return ResponseEntity.ok(userService.updatePassword(user.getEmail(), user.getOldPassword(),
-                    user.getNewPassword(), user.getConfirmPassword()));
-        } catch (CustomExceptions.UserNotFoundException e) {
-            logger.error("User not found: {}", user.getEmail(), e);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (CustomExceptions.InvalidPasswordException e) {
-            logger.error("Invalid password for user: {}", user.getEmail(), e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch (Exception e) {
-            logger.error("Unexpected error: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+        return ResponseEntity.ok(userService.updatePassword(user.getEmail(), user.getOldPassword(),
+                user.getNewPassword(), user.getConfirmPassword()));
     }
 
     @GetMapping(value = USER_LOGIN_PATH)
     public ResponseEntity<User> login(@RequestBody UserLoginDTO user) {
-        try {
             User loggedInUser = userService.loginUser(user.getEmail(), user.getPassword());
             if (loggedInUser == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
             return ResponseEntity.ok(loggedInUser);
-        } catch (CustomExceptions.UserNotFoundException e) {
-            logger.error(String.format("User not found with this email: %s", user.getEmail()));
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (CustomExceptions.InvalidPasswordException e) {
-            logger.error("Password is invalid!");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        } catch (Exception e) {
-            logger.error("Unexpected error during login: " + e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
     }
 
 }
