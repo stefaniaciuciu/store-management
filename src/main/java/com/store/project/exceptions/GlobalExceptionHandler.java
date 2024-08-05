@@ -11,57 +11,57 @@ import java.util.Date;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<ErrorObject> invalidPasswordException(InvalidPasswordException ex){
         ErrorObject errorObject = new ErrorObject();
         errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
         errorObject.setMessage(ex.getMessage());
         errorObject.setTimestamp(new Date());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorObject);
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(InvalidEmailException.class)
     public ResponseEntity<ErrorObject> invalidEmailException(InvalidEmailException ex){
         ErrorObject errorObject = new ErrorObject();
         errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
         errorObject.setMessage(ex.getMessage());
         errorObject.setTimestamp(new Date());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorObject);
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ErrorObject> userAlreadyExistsException(UserAlreadyExistsException ex){
         ErrorObject errorObject = new ErrorObject();
         errorObject.setStatusCode(HttpStatus.CONFLICT.value());
         errorObject.setMessage(ex.getMessage());
         errorObject.setTimestamp(new Date());
-        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorObject);
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorObject> userNotFoundException(UserNotFoundException ex){
         ErrorObject errorObject = new ErrorObject();
         errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
         errorObject.setMessage(ex.getMessage());
         errorObject.setTimestamp(new Date());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorObject);
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ErrorObject> productNotFoundException(ProductNotFoundException ex){
         ErrorObject errorObject = new ErrorObject();
         errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
         errorObject.setMessage(ex.getMessage());
         errorObject.setTimestamp(new Date());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorObject);
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(PurchaseNotFoundException.class)
     public ResponseEntity<ErrorObject> purchaseNotFoundException(PurchaseNotFoundException ex){
         ErrorObject errorObject = new ErrorObject();
         errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
         errorObject.setMessage(ex.getMessage());
         errorObject.setTimestamp(new Date());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorObject);
     }
 }
