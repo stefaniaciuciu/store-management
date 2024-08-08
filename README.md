@@ -24,6 +24,7 @@ To test the service I used the annotation @SpringBootTest on the test class and 
 my expectations. For each test I created a test user, tested the flow for each method and at the end I deleted the test user. Like this, it doesn't interfere with the other tests
 or with other entries from the database.
    - To test the APIs work accordingly, I used Postman.
+   - UPDATE: Removed the Controller tests for user, only left the tests for UserService
 
 Java 9+ features:
 - The var keyword (java10) that allows for local variable type inference.
